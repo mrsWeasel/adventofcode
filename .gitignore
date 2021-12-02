@@ -1,1 +1,15 @@
+##MacOS system files
 .DS_Store
+
+##2020 tasks are only for practise
+2020
+
+##Don't include test data
+**/**/testdata.txt
+
+##Don't include placeholders for upcoming tasks
+2021/03
+2021/04
+2021/05
+2021/06
+2021/07

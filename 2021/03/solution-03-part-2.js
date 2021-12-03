@@ -9,46 +9,29 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
     const arr = data.trim().split(/\n/)
     
     let i = 0
-    const o = (items) => {
+ 
+    const find = (items, operation) => {
         let zeros = 0
         let ones = 0
 
-        items.map((item) => {
-            item[i] == 1 ? ones++ : zeros++ 
-        })
+        items.map((item) => item[i] == 1 ? ones++ : zeros++)
 
-        const m = ones >= zeros ? 1 : 0
+        let t = ones >= zeros ? 1 : 0       
 
-        const filtered = items.filter((item) => {
-            if (item[i] == m) return item
-        })
+        if (operation === 'findRare') {
+            t = ones < zeros ? 1 : 0
+        }
         
+        const filtered = items.filter((item) => item[i] == t ? item : null)
         i++
-        
-        if (filtered.length > 1) return o(filtered)   
+
+        if (filtered.length > 1) return find(filtered, operation)   
         return filtered
     }
 
-    let y = 0
-    const s = (items) => {
-        let zeros = 0
-        let ones = 0
-
-        items.map((item) => {
-            item[y] == 1 ? ones++ : zeros++ 
-        })
-      
-        const l = ones < zeros ? 1 : 0
-
-        const filtered = items.filter((item) => {
-            if (item[y] == l) return item
-        })
-        
-        y++
-        
-        if (filtered.length > 1) return s(filtered)   
-        return filtered
-    }
-
-    console.log(parseInt(o(arr).join(''), 2) * parseInt(s(arr).join(''), 2))
+    const r = parseInt(find(arr, 'findRare').join(''), 2)
+    i = 0
+    const c = parseInt(find(arr, 'findCommon').join(''), 2)
+   
+    console.log(r * c)
 })

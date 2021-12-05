@@ -30,6 +30,7 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
         const x2 = c[1][0]
         const y2 = c[1][1]
         
+        // vertical lines
         if (x1 === x2) {
             const start = Math.min(y1, y2)
             const end = Math.max(y1, y2)
@@ -38,12 +39,20 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
                 markGridCell(x1, i)
             }
         }
-        if (y1 === y2) {
+        // horizontal lines
+        else if (y1 === y2) {
             const start = Math.min(x1, x2)
             const end = Math.max(x1, x2)
 
             for (let i = start; i < end + 1; i++) {
                 markGridCell(i, y1)
+            }
+        }
+        // diagonal lines
+        else {    
+            const steps = Math.max(y1, y2) - Math.min(y1, y2)
+            for (let i = 0; i < steps + 1; i++) {
+                markGridCell(x1 < x2 ? x1 + i : x1 -i, y1 < y2 ? y1 + i : y1 -i)
             }
         }
        

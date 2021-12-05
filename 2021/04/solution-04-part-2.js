@@ -53,6 +53,7 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
     const lastBoardId = winningBoards[winningBoards.length - 1].board
     const lastWinner = boards[lastBoardId].flat()
 
+    // This is not very pretty 🙈✂️ This method of keeping track of 'used' numbers worked better for part 1...
     history.splice(history.indexOf(lastCalled) + 1, history.length - history.indexOf(lastCalled))
 
     const notCalled = lastWinner.filter((n) => {

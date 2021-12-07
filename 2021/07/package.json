@@ -1,0 +1,12 @@
+{
+  "name": "adventofcode07",
+  "version": "1.0.0",
+  "description": "",
+  "main": "solution-07.js",
+  "scripts": {
+    "start": "node solution-07.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Laura Heino",
+  "license": "ISC"
+}

@@ -1,0 +1,18 @@
+{
+    "name": "adventofcode08",
+    "version": "1.0.0",
+    "description": "",
+    "main": "solution-08.js",
+    "scripts": {
+      "start": "node solution-08.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Laura Heino",
+    "license": "ISC",
+    "prettier": {
+      "trailingComma": "es5",
+      "tabWidth": 4,
+      "semi": false,
+      "singleQuote": true
+    }
+  }

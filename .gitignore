@@ -7,6 +7,9 @@
 ##Don't include test data
 **/**/testdata.txt
 
+##Node modules
+**/**/node_modules
+
 ##Don't include placeholders for upcoming tasks
-2021/11
 2021/12
+2021/13

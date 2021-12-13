@@ -8,7 +8,7 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
 
   let octopus = data.split('\n').map((r) => r.split('').map(Number))
 
-  let flashCounter = 0
+  let stepCounter = 0
   let flashing = []
 
   for (let i = 0; i < octopus[0].length; i++) {
@@ -22,14 +22,14 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
     }
 
     const d = {
-      up: [x, y - 1 ],
+      up: [x, y - 1],
       upR: [x + 1, y - 1],
-      right: [x + 1,  y],
+      right: [x + 1, y],
       downR: [x + 1, y + 1],
       down: [x, y + 1],
-      downL: [x - 1, y + 1 ],
+      downL: [x - 1, y + 1],
       left: [x - 1, y],
-      upLeft: [x - 1, y - 1]
+      upLeft: [x - 1, y - 1],
     }
 
     for (const dir in d) {
@@ -43,13 +43,8 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
   }
 
   const flash = (f) => {
-  
-    f.flat().map((item) => {
-      if (item) flashCounter++
-    })
-
     let adjacentFlashing = false
-    
+
     flashingNext = []
     for (let i = 0; i < octopus[0].length; i++) {
       flashingNext.push(Array(octopus[0].length).fill(0))
@@ -80,8 +75,11 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
     if (adjacentFlashing) flash(flashingNext)
   }
 
-  const simulateSteps = (steps) => {
-    while (steps > 0) {
+  let continueFlashing = undefined
+
+  const simulateSteps = (steps = undefined) => {
+    do {
+      continueFlashing = false
       // First, increase all by 1
       for (let i = 0; i < octopus.length; i++) {
         for (let j = 0; j < octopus[i].length; j++) {
@@ -92,14 +90,11 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
       for (let i = 0; i < octopus.length; i++) {
         for (let j = 0; j < octopus[i].length; j++) {
           if (octopus[i][j] > 9) {
-            // flash(j, i)
             flashing[i][j] = 1
           }
         }
       }
-
       flash(flashing)
-
       // Set all flashed octopuses to 0
       for (let i = 0; i < octopus.length; i++) {
         for (let j = 0; j < octopus[i].length; j++) {
@@ -108,16 +103,19 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
           }
         }
       }
-      steps--
-
-      console.log(octopus.join('\n'), '\n\n')
+      octopus.flat().map((o) => {
+        if (o !== 0) continueFlashing = true
+      })
+     
       flashing = []
       for (let i = 0; i < octopus[0].length; i++) {
         flashing.push(Array(octopus[0].length).fill(0))
       }
-    }
+      stepCounter++
+    } while (continueFlashing)
+    
   }
 
-  simulateSteps(100)
-  console.log(flashCounter)
+  simulateSteps()
+  console.log(stepCounter)
 })

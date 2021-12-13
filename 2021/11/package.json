@@ -4,7 +4,7 @@
     "description": "",
     "main": "solution-11.js",
     "scripts": {
-        "start": "node solution-11.js",
+        "start": "node solution-11-part-1.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Laura Heino",
@@ -13,6 +13,7 @@
         "trailingComma": "es5",
         "tabWidth": 2,
         "semi": false,
-        "singleQuote": true
+        "singleQuote": true,
+        "printWidth": 120
     }
 }

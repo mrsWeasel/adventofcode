@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-fs.readFile('./testdata.txt', 'utf-8', (error, data) => {
+fs.readFile('./data.txt', 'utf-8', (error, data) => {
   if (error) {
     console.log(error)
     return
@@ -8,46 +8,78 @@ fs.readFile('./testdata.txt', 'utf-8', (error, data) => {
 
   let octopus = data.split('\n').map((r) => r.split('').map(Number))
 
-  let flashing = []
   let flashCounter = 0
+  let flashing = []
 
   for (let i = 0; i < octopus[0].length; i++) {
     flashing.push(Array(octopus[0].length).fill(0))
   }
 
-  const flash = (x, y) => {
-    flashCounter++
-    flashing[y][x] = 1
-    console.log(x,y)
+  const selectAdjacent = (x, y) => {
+    adjacent = []
+    for (let i = 0; i < octopus[0].length; i++) {
+      adjacent.push(Array(octopus[0].length).fill(0))
+    }
 
     const d = {
-      up: { xPos: x, yPos: y - 1 },
-      upR: { xPos: x + 1, yPos: y - 1 },
-      right: { xPos: x + 1, yPos: y },
-      downR: { xPos: x + 1, yPos: y + 1 },
-      down: { xPos: x, yPos: y + 1 },
-      downL: { xPos: x - 1, yPos: y + 1 },
-      left: { xPos: x - 1, yPos: y },
-      upLeft: { xPos: x - 1, yPos: y - 1 },
+      up: [x, y - 1 ],
+      upR: [x + 1, y - 1],
+      right: [x + 1,  y],
+      downR: [x + 1, y + 1],
+      down: [x, y + 1],
+      downL: [x - 1, y + 1 ],
+      left: [x - 1, y],
+      upLeft: [x - 1, y - 1]
     }
 
-    try {
-      for (const dir in d) {
-        if (typeof octopus[d[dir].yPos][d[dir].xPos] !== 'undefined' && !flashing[d[dir].yPos][d[dir].xPos]) {
-          octopus[d[dir].yPos][d[dir].xPos]++
-          console.log(octopus[d[dir].yPos][d[dir].xPos])
+    for (const dir in d) {
+      try {
+        if (typeof octopus[d[dir][1]][d[dir][0]] !== 'undefined') {
+          adjacent[d[dir][1]][d[dir][0]] = 1
         }
-        if (octopus[d[dir].yPos][d[dir].xPos] > 9 && !flashing[d[dir].yPos][d[dir].xPos]) {
-          flash(d[dir].xPos, d[dir].yPos)
-          console.log(octopus[d[dir].yPos][d[dir].xPos], 'flashing')
+      } catch (error) {}
+    }
+    return adjacent
+  }
+
+  const flash = (f) => {
+  
+    f.flat().map((item) => {
+      if (item) flashCounter++
+    })
+
+    let adjacentFlashing = false
+    
+    flashingNext = []
+    for (let i = 0; i < octopus[0].length; i++) {
+      flashingNext.push(Array(octopus[0].length).fill(0))
+    }
+
+    // add 1
+    for (let i = 0; i < f.length; i++) {
+      for (let j = 0; j < f[i].length; j++) {
+        if (!f[i][j]) continue
+        let adjacent = selectAdjacent(j, i)
+        for (let k = 0; k < adjacent.length; k++) {
+          for (let l = 0; l < adjacent[k].length; l++) {
+            if (!adjacent[k][l]) continue
+            octopus[k][l]++
+          }
         }
       }
-  
-    } catch (error) {
-      console.log(error)
     }
+    for (let i = 0; i < octopus.length; i++) {
+      for (let j = 0; j < octopus[i].length; j++) {
+        if (octopus[i][j] > 9 && !flashing[i][j]) {
+          flashingNext[i][j] = 1
+          flashing[i][j] = 1
+          adjacentFlashing = true
+        }
+      }
+    }
+    if (adjacentFlashing) flash(flashingNext)
   }
- 
+
   const simulateSteps = (steps) => {
     while (steps > 0) {
       // First, increase all by 1
@@ -60,10 +92,13 @@ fs.readFile('./testdata.txt', 'utf-8', (error, data) => {
       for (let i = 0; i < octopus.length; i++) {
         for (let j = 0; j < octopus[i].length; j++) {
           if (octopus[i][j] > 9) {
-            flashing[i][j] = 0
+            // flash(j, i)
+            flashing[i][j] = 1
           }
         }
       }
+
+      flash(flashing)
 
       // Set all flashed octopuses to 0
       for (let i = 0; i < octopus.length; i++) {
@@ -73,17 +108,16 @@ fs.readFile('./testdata.txt', 'utf-8', (error, data) => {
           }
         }
       }
-
       steps--
 
-      console.log(octopus.join('\n'), '\n\n', flashing.join('\n'), '\n\n')
+      console.log(octopus.join('\n'), '\n\n')
       flashing = []
       for (let i = 0; i < octopus[0].length; i++) {
         flashing.push(Array(octopus[0].length).fill(0))
       }
     }
-    // console.log(octopus)
   }
 
-  simulateSteps(2)
+  simulateSteps(100)
+  console.log(flashCounter)
 })

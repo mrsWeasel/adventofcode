@@ -4,7 +4,7 @@
     "description": "",
     "main": "solution-12.js",
     "scripts": {
-        "start": "node solution-12.js",
+        "start": "node solution-12-part-1.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "Laura Heino",

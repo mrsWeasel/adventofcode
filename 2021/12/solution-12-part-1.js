@@ -71,8 +71,6 @@ const getListIndex = (node, stack) => {
   return matches.length - 1
 }
 
-let done = false
-
 const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => {
   
   if (!stack) stack = [node]
@@ -85,11 +83,6 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
     visited[node].push(arr)
   }
 
-  if (stack.length === 1) {
-    done = true
-    visited[node][listIndex].map(i => i ? done = done : done = false)  
-  }
-
   if (node === end) {
     allPaths.push([...stack])
     removedLast = stack.pop()
@@ -100,7 +93,6 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
   }
 
   for (let i = 0; i <= adj.length; i++) {
-    if (done) return
 
     if (!adj[i]) {
       // if there are no adjacent items left, remove node from stack

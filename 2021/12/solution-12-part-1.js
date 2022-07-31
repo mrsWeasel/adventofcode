@@ -1,5 +1,7 @@
 'use strict'
 
+// TODO: form graphs from data (instead of hardcoding)
+
 // TEST 1
 // const graph = {
 //   start: ['A', 'b'],
@@ -71,7 +73,7 @@ const getListIndex = (node, stack) => {
   return matches.length - 1
 }
 
-const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => {
+const findAllPaths = (node, end, stack = undefined) => {
   
   if (!stack) stack = [node]
   const listIndex = getListIndex(node, stack)
@@ -85,9 +87,9 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
 
   if (node === end) {
     allPaths.push([...stack])
-    removedLast = stack.pop()
+    stack.pop()
     if (stack.length > 0) {
-      return findAllPaths(stack[stack.length - 1], end, removedLast, stack)
+      return findAllPaths(stack[stack.length - 1], end, stack)
     }  
     return
   }
@@ -97,7 +99,7 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
     if (!adj[i]) {
       // if there are no adjacent items left, remove node from stack
       visited[node][listIndex] = new Array(adj.length).fill(0)
-      removedLast = stack.pop()
+      stack.pop()
     } else {
       // skip if item has been traversed in current path already
       if (visited[node][listIndex][i]) continue
@@ -105,19 +107,15 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
       // mark item visited
       visited[node][listIndex][i] = 1
 
-      // skip if item is the last removed one 
-      if (adj[i] === removedLast) continue
-
       // skip if (small) item is in stack already
       if (stack.indexOf(adj[i]) !== -1 && isSmall(adj[i])) continue
     
       stack.push(adj[i])
-      removedLast = undefined
-
+  
     }
 
     if (stack.length > 0) {
-     return findAllPaths(stack[stack.length - 1], end, removedLast, stack)
+     return findAllPaths(stack[stack.length - 1], end, stack)
     }  
 
     return
@@ -127,6 +125,6 @@ const findAllPaths = (node, end, removedLast = undefined, stack = undefined) => 
 findAllPaths('start', 'end')
 console.log(allPaths.length)
 
-// Turns out that Node.js does not support Tail Call Optimization. 🙈
+// Turns out that Node.js (and V8 in general) does not support Tail Call Optimization. 🙈
 // So maximum call stack size will be exceeded with the actual data set. 
-// However, TCO is supported in ES6 and this code will run on f.e. Safari. 
+// However, TCO is specified in ES6 and this code will run as such on Safari. 

@@ -19,7 +19,6 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
       if (!directories['root']) {
         directories['root'] = {}
       }
-
       return
     }
 
@@ -35,13 +34,29 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
 
       const parent = eval(keypath)
       if (!parent[currentDir]) {
-        parent[currentDir] = {}
+        parent[currentDir] = { size: 0 }
       }
 
       stack.push(currentDir)
       return
     }
+
+    if (c.includes('ls')) {
+      return
+    }
+
+    if (c.includes('dir ')) {
+      return
+    }
+
+    // rest of the log is just file sizes
+    const size = c.split(' ')[0]
+    console.log('Size: ', size)
+    let keypath = 'directories.' + stack.join('.')
+    
+    const dir = eval(keypath)
+    dir.size += Number(size)
   })
 
-  console.log(directories)
+  console.log(JSON.stringify(directories))
 })

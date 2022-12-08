@@ -8,29 +8,28 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
 
   const directories = {}
 
-  let stack = []
+  let stack = ['directories']
 
   // construct directory structure
   data.split(/\n/).map((c) => {
-    console.log(c)
     if (c.includes('cd /')) {
-      stack = []
+      stack = ['directories']
       stack.push('root')
       if (!directories['root']) {
-        directories['root'] = {}
+        directories['root'] = { size: 0 }
       }
       return
     }
 
-    if (c.includes('cd ..')) {
+    if (c.includes('$ cd ..')) {
       stack.pop()
       return
     }
 
-    if (c.includes('cd')) {
+    if (c.includes('$ cd')) {
       const currentDir = c.replace('$ cd ', '')
 
-      let keypath = 'directories.' + stack.join('.')
+      let keypath = stack.join('.')
 
       const parent = eval(keypath)
       if (!parent[currentDir]) {
@@ -41,7 +40,7 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
       return
     }
 
-    if (c.includes('ls')) {
+    if (c.includes('$ ls')) {
       return
     }
 
@@ -51,12 +50,40 @@ fs.readFile('./data.txt', 'utf-8', (error, data) => {
 
     // rest of the log is just file sizes
     const size = c.split(' ')[0]
-    console.log('Size: ', size)
-    let keypath = 'directories.' + stack.join('.')
     
+    let keypath = stack.join('.')
+
     const dir = eval(keypath)
     dir.size += Number(size)
+
+    const stackCopy = [...stack]
+
+    while (stackCopy.length > 2) {
+      stackCopy.pop()
+      let keypath = stackCopy.join('.')
+      const dir = eval(keypath)
+      dir.size += Number(size)
+   
+    }
   })
 
-  console.log(JSON.stringify(directories))
+  // count sizes
+  let sum = 0
+  
+  const sumFn = (obj) => {
+    for (key in obj) {
+      if (key === 'size' && obj[key] <= 100000) {
+        sum += obj[key]
+        continue
+      } 
+      if (Object.keys(obj).length < 1) {
+        continue
+      }
+      sumFn(obj[key])
+    }
+  }
+
+  sumFn(directories)
+  // ⭐️ part 1
+  console.log(sum)
 })

@@ -1,0 +1,19 @@
+{
+  "name": "08",
+  "version": "1.0.0",
+  "description": "Advent of Code 2022 - day 8",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run start:part1 && npm run start:part2",
+    "start:part1": "node part1.js",
+    "start:part2": "node part2.js"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false
+  },
+  "author": "Laura Heino",
+  "license": "ISC"
+}
